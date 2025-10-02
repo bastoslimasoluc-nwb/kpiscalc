@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Indicadores de Manutenção</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .input-group input {
+            width: 95%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .results p {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .results p strong {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Calculadora de Indicadores de Manutenção</h2>
+        <div class="input-group">
+            <label for="tempoOperacao">Tempo Total de Operação (horas):</label>
+            <input type="number" id="tempoOperacao" placeholder="Ex: 1000">
+        </div>
+        <div class="input-group">
+            <label for="tempoManutencao">Tempo Total de Manutenção (horas):</label>
+            <input type="number" id="tempoManutencao" placeholder="Ex: 50">
+        </div>
+        <div class="input-group">
+            <label for="numeroFalhas">Número de Falhas:</label>
+            <input type="number" id="numeroFalhas" placeholder="Ex: 5">
+        </div>
+        <button onclick="calcularIndicadores()">Calcular</button>
+        <div class="results" id="resultados">
+            </div>
+    </div>
+
+    <script>
+        function calcularIndicadores() {
+            const tempoOperacao = parseFloat(document.getElementById('tempoOperacao').value);
+            const tempoManutencao = parseFloat(document.getElementById('tempoManutencao').value);
+            const numeroFalhas = parseInt(document.getElementById('numeroFalhas').value);
+            const resultadosDiv = document.getElementById('resultados');
+
+            if (isNaN(tempoOperacao) || isNaN(tempoManutencao) || isNaN(numeroFalhas) || tempoOperacao <= 0 || tempoManutencao < 0 || numeroFalhas <= 0) {
+                resultadosDiv.innerHTML = "<p style='color: red;'>Por favor, insira valores válidos em todos os campos.</p>";
+                return;
+            }
+
+            // Cálculo do MTBF (Mean Time Between Failures)
+            const tempoDisponivel = tempoOperacao - tempoManutencao;
+            const mtbf = tempoDisponivel / numeroFalhas;
+
+            // Cálculo do MTTR (Mean Time To Repair)
+            const mttr = tempoManutencao / numeroFalhas;
+
+            // Cálculo da Disponibilidade
+            const disponibilidade = (mtbf / (mtbf + mttr)) * 100;
+
+            resultadosDiv.innerHTML = `
+                <p><strong>MTBF (Tempo Médio Entre Falhas):</strong> ${mtbf.toFixed(2)} horas</p>
+                <p><strong>MTTR (Tempo Médio Para Reparo):</strong> ${mttr.toFixed(2)} horas</p>
+                <p><strong>Disponibilidade:</strong> ${disponibilidade.toFixed(2)} %</p>
+            `;
+        }
+    </script>
+
+</body>
+</html>
